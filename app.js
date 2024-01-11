@@ -1,19 +1,14 @@
-const port = process.env.PORT || 4000;
-
-const io = require("socket.io")(port, {
+const io = require('socket.io')(3001, {
   cors: {
-    origin: "*",
-  },
-});
-
-let signalValue = false;
-
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("update-signal-value", () => {
-    signalValue = !signalValue;
-    console.log("signal value updated");
-    socket.broadcast.emit("get-signal-value", signalValue);
-    socket.emit("get-signal-value", signalValue);
-  });
-});
+    origin: ["http://localhost:3000"]
+  }
+})
+let signal_value = false
+io.on("connection", socket => {
+  console.log("a user connected with the socket-id: ", socket.id)
+  socket.on('update-signal-value', () => {
+    signal_value = !signal_value
+    console.log("signal updated to: ", signal_value)
+    socket.broadcast.emit('get-signal-value', signal_value)
+  })
+})
